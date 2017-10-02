@@ -1,0 +1,43 @@
+name: MultiLevelWhitelist
+main: de.selebrator.multilevelwhitelist.PluginMain
+version: 1.0.0-alpha
+authors: [Selebrator]
+commands:
+  whitelist:
+    description: Show the help section for the MultiLevelWhitelist plugin
+    usage: |
+           /<command>
+permissions:
+  whitelist.list.*:
+    description: Ignore all whitelists
+  whitelist.help:
+    description: See the help interface
+  whitelist.info:
+    description: See the explenation of what the plugin does
+  whitelist.notify.*:
+    description: See all notifications
+    children:
+      whitelist.notify.toggle: true
+      whitelist.notify.joinfail: true
+  whitelist.notify.toggle:
+    description: Get notified when a whitelist gets turned on or off
+    children:
+      whitelist.notify.on: true
+      whitelist.notify.off: true
+  whitelist.notify.on:
+    description: Get notified when a whitelist gets turned on
+  whitelist.notify.off:
+    description: Get notified when a whitelist gets turned off
+  whitelist.notify.joinfail:
+    description: Get notified wehn a player fails to join
+  whitelist.list:
+    description: Get access to /whitelist list
+  whitelist.modify.toggle:
+    description: Get access to toggeling the state of a whitelist
+    children:
+      whitelist.modify.on: true
+      whitelist.modify.off: true
+  whitelist.modify.on:
+    description: Get access to enabeling a whitelist
+  whitelist.modify.off:
+    description: Get access to diabeling a whitelist

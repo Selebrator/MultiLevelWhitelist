@@ -1,0 +1,72 @@
+#MultiLevelWhitelist Allows you to have multiple whitelists that can be individual turned on and off on demand
+#A Player is allowed to join if they are on at least one active whitelist
+#Players are considered to be on a whitelist if they have the permission 'whitelist.list.<whitelist name>'
+#If a player is on NONE of the active whitelists they will be kicked with the message of that whitelist with the highest priority
+#
+#whitelist placeholders: %whitelist_name%, %whitelist_displayname%
+#player placeholders: %player_uuid%, %player_name%, %player_displayname%
+
+#The message shown if the player don't have the permission to perform the command
+#Legal placeholders: none
+message_no_permission: "&cYou don't have the permission to perform this command."
+
+#The message shown when a whitelist is tuned on
+#Legal placeholders: whitelist
+message_on: "&8[&a+&8]&r &eWhitelist &r%whitelist_displayname%&r &eis now active."
+
+#The message shown by the /whitelist list command if the whitelist is active
+#Legal placeholders: whitelist
+message_on_list: "&8[&a\u2714&8] &r%whitelist_displayname%&r(%whitelist_name%)"
+
+#The message shown when a whitelist is tuned off
+#Legal placeholders: whitelist
+message_off: "&8[&c-&8]&r &eWhitelist &r%whitelist_displayname%&r &eis no longer active."
+
+#The message shown by the /whitelist list command if the whitelist is not active
+#Legal placeholders: whitelist
+message_off_list: "&8[&c\u2718&8] &r%whitelist_displayname%&r(%whitelist_name%)"
+
+#The message shown when a player fails to join
+#Legal placeholders: player
+message_failes_join: "%player_displayname% &r&etried to join but is not on any active whitelist."
+
+#The priority must be a positive integer, higher is better
+#Legal placeholders: none
+whitelists:
+  event:
+    displayname: "&6Event"
+    priority: 1
+    message:
+      - "The server currently is only open for participants of the event"
+      - "We'd like to see you again at 18:00"
+  maintenance:
+    displayname: "&4Maintenance"
+    priority: 100
+    message:
+      - "The server is currently on maintenance mode"
+      - "§cOnly Staff members may join right now"
+      - ""
+      - "We will be up again soon"
+
+#MultiLevelWhitelist default Configuration by Selebrator
+# message_no_permission: "&cYou don't have the permission to perform this command."
+# message_on: "&8[&a+&8]&r &eWhitelist &r%whitelist_displayname%&r &eis now active."
+# message_on_list: "&8[&a\u2714&8] &r%whitelist_displayname%&r(%name%)"
+# message_off: "&8[&c-&8]&r &eWhitelist &r%whitelist_displayname%&r &eis no longer active."
+# message_off_list: "&8[&c\u2718&8] &r%whitelist_displayname%&r(%name%)"
+# message_failes_join: "%player_uuid%:%player_displayname% &r&etried to join but is not on any active whitelist."
+# whitelists:
+#   event:
+#     displayname: "&6Event"
+#     priority: 1
+#     message:
+#       - "The server currently is only open for participants of the event"
+#       - "We'd like to see you again at 18:00"
+#   maintenance:
+#     displayname: "&4Maintenance"
+#     priority: 100
+#     message:
+#       - "The server is currently on maintenance mode"
+#       - "§cOnly Staff members may join right now"
+#       - ""
+#       - "We will be up again soon"

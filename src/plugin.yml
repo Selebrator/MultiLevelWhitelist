@@ -1,6 +1,6 @@
 name: MultiLevelWhitelist
 main: de.selebrator.multilevelwhitelist.PluginMain
-version: 1.1.0-beta
+version: 1.2.0-beta
 authors: [Selebrator]
 commands:
   whitelist:
@@ -19,6 +19,7 @@ permissions:
     children:
       whitelist.notify.toggle: true
       whitelist.notify.joinfail: true
+      whitelist.notify.kick: true
   whitelist.notify.toggle:
     description: Get notified when a whitelist gets turned on or off
     children:
@@ -30,6 +31,8 @@ permissions:
     description: Get notified when a whitelist gets turned off
   whitelist.notify.joinfail:
     description: Get notified wehn a player fails to join
+  whitelist.notify.kick:
+    description: Get notified when players are kicked by the /whitelist kick command
   whitelist.list:
     description: Get access to /whitelist list
   whitelist.modify.toggle:
@@ -41,3 +44,5 @@ permissions:
     description: Get access to enabeling a whitelist
   whitelist.modify.off:
     description: Get access to diabeling a whitelist
+  whitelist.kick:
+    description: Get access to /whitelist kick

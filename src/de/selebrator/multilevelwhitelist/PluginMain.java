@@ -34,7 +34,8 @@ public class PluginMain extends JavaPlugin implements Listener, CommandExecutor 
 			"§a/whitelist list §7- List all registered Whitelists",
 			"§a/whitelist on <name> §7- activate whitelist <name> if registered",
 			"§a/whitelist off <name> §7- deactivate whitelist <name> if registered",
-			"§a/whitelist toggle <name> §7- toggle the state of whitelist <name> if registered"
+			"§a/whitelist toggle <name> §7- toggle the state of whitelist <name> if registered",
+			"§a/whitelist kick §7- kick all players that are on none of the active whitelists"
 	};
 	private final String[] info = {
 			"§7---------------§8[§3" + this.getDescription().getName() + " - info§8]§7---------------",
@@ -49,6 +50,7 @@ public class PluginMain extends JavaPlugin implements Listener, CommandExecutor 
 	private String message_off;
 	private String message_off_list;
 	private String message_failes_join;
+	private String message_kick;
 	private Map<String, Whitelist> registeredWhitelists = new HashMap<>();
 	private List<String> activeWhitelists = new ArrayList<>();
 
@@ -68,6 +70,7 @@ public class PluginMain extends JavaPlugin implements Listener, CommandExecutor 
 		this.message_off = ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("message_off"));
 		this.message_off_list = ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("message_off_list"));
 		this.message_failes_join = ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("message_failes_join"));
+		this.message_kick = ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("message_kick"));
 
 		ConfigurationSection whitelists = this.getConfig().getConfigurationSection("whitelists");
 		Map<String, Object> whitelistNames = whitelists.getValues(false);
@@ -125,6 +128,18 @@ public class PluginMain extends JavaPlugin implements Listener, CommandExecutor 
 
 				for(String line : this.info)
 					sender.sendMessage(line);
+				return true;
+			} else if(args[0].equalsIgnoreCase("kick")) {
+				if(!checkPermission(sender, "whitelist.kick"))
+					return true;
+
+				long kickedPlayersCount = this.getServer().getOnlinePlayers().stream()
+						.filter(player -> !mayPlayerStay(player))
+						.peek(this::kick)
+						.peek(player -> System.out.println(player.getDisplayName()))
+						.count();
+				String notification = this.message_kick.replaceAll("%count%", String.valueOf(kickedPlayersCount));
+				notify(notification, sender, new Permission("whitelist.notify.kick"));
 				return true;
 			}
 		} else if(args.length == 2) {
@@ -202,36 +217,38 @@ public class PluginMain extends JavaPlugin implements Listener, CommandExecutor 
 		}
 	}
 
-	@EventHandler
-	private void onJoin(PlayerJoinEvent event) {
-		if(event.getPlayer().hasPermission("whitelist.list.*"))
-			return;
+	private boolean mayPlayerStay(Player player) {
+		return this.activeWhitelists.size() == 0 || player.hasPermission("whitelist.list.*") || this.activeWhitelists.stream().anyMatch(name -> player.hasPermission(this.registeredWhitelists.get(name).getPermission()));
+	}
 
-		Whitelist highestPriority = new Whitelist("null", "null",0, new ArrayList<>());
-		for(String name : this.activeWhitelists) {
-			Whitelist whitelist = this.registeredWhitelists.get(name);
-			if(!event.getPlayer().hasPermission(whitelist.getPermission())) {
-				if(whitelist.getPriority() > highestPriority.getPriority())
-					highestPriority = whitelist;
-			} else {
-				return;
-			}
-		}
+	private Whitelist getHighestActiveWhitelist() {
+		return this.activeWhitelists.stream()
+				.map(this.registeredWhitelists::get)
+				.reduce((w1, w2) -> (w1.getPriority() > w2.getPriority() ? w1 : w2))
+				.orElse(new Whitelist("null", "null",0, new ArrayList<>()));
+	}
 
+	private void kick(Player player) {
+		Whitelist highestPriority = getHighestActiveWhitelist();
 		String message = highestPriority.getMessage().stream()
 				.collect(Collectors.joining("\n§r"));
 
-		if(highestPriority.getPriority() > 0) {
-			event.getPlayer().kickPlayer(message);
+		if(highestPriority.getPriority() > 0)
+			player.kickPlayer(message);
+	}
+
+	@EventHandler
+	private void onJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		if(!this.mayPlayerStay(player)) {
+			kick(player);
 
 			String notification = this.message_failes_join
-					.replaceAll("%player_uuid%", event.getPlayer().getUniqueId().toString())
-					.replaceAll("%player_displayname%", event.getPlayer().getDisplayName())
-					.replaceAll("%player_name%", event.getPlayer().getName());
+					.replaceAll("%player_uuid%", player.getUniqueId().toString())
+					.replaceAll("%player_displayname%", player.getDisplayName())
+					.replaceAll("%player_name%", player.getName());
 
 			notify(notification, this.getServer().getConsoleSender(), new Permission("whitelist.notify.joinfail"));
 		}
-
-
 	}
 }

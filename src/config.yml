@@ -30,6 +30,10 @@ message_off_list: "&8[&c\u2718&8] &r%whitelist_displayname%&r(%whitelist_name%)"
 #Legal placeholders: player
 message_failes_join: "%player_displayname% &r&etried to join but is not on any active whitelist."
 
+#The message shown when /whitelist kick is used
+#Legal placeholders: %count%: the amount of kicked players
+message_kick: "&eKicked &c%count% &eun-whitelisted players."
+
 #The priority must be a positive integer, higher is better
 #Legal placeholders: none
 whitelists:

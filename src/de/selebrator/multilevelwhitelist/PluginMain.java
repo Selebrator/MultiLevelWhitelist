@@ -7,6 +7,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +16,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +25,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PluginMain extends JavaPlugin implements Listener, CommandExecutor {
+	private File saveFile = new File(this.getDataFolder() + "/activelists.yml");
+	FileConfiguration save;
+
 	private final String[] commands = {
 			"§7---------------§8[§3" + this.getDescription().getName() + " - help§8]§7---------------",
 			"§a/whitelist info §7- Gives a explanation of what the plugin does",
@@ -75,11 +82,18 @@ public class PluginMain extends JavaPlugin implements Listener, CommandExecutor 
 				coloredMessage.add(ChatColor.translateAlternateColorCodes('&', (String) line));
 			this.registeredWhitelists.put(whitelistName.toLowerCase(), new Whitelist(whitelistName, displayName, priority, coloredMessage));
 		}
+		this.save = YamlConfiguration.loadConfiguration(this.saveFile);
+		this.activeWhitelists = this.save.getStringList("activelists");
 	}
 
 	@Override
 	public void onDisable() {
-
+		this.save.set("activelists", this.activeWhitelists);
+		try {
+			this.save.save(this.saveFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

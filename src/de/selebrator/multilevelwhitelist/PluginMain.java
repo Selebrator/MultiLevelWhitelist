@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -238,10 +239,12 @@ public class PluginMain extends JavaPlugin implements Listener, CommandExecutor 
 	}
 
 	@EventHandler
-	private void onJoin(PlayerJoinEvent event) {
+	private void onJoin(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
 		if(!this.mayPlayerStay(player)) {
-			kick(player);
+			String message = getHighestActiveWhitelist().getMessage().stream()
+					.collect(Collectors.joining("\n§r"));
+			event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, message);
 
 			String notification = this.message_failes_join
 					.replaceAll("%player_uuid%", player.getUniqueId().toString())

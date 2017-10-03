@@ -1,6 +1,6 @@
 name: MultiLevelWhitelist
 main: de.selebrator.multilevelwhitelist.PluginMain
-version: 1.2.0-beta
+version: 1.2.1-beta
 authors: [Selebrator]
 commands:
   whitelist:

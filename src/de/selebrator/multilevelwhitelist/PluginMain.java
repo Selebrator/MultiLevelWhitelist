@@ -25,9 +25,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PluginMain extends JavaPlugin implements Listener, CommandExecutor {
-	private File saveFile = new File(this.getDataFolder() + "/activelists.yml");
-	FileConfiguration save;
-
 	private final String[] commands = {
 			"§7---------------§8[§3" + this.getDescription().getName() + " - help§8]§7---------------",
 			"§a/whitelist info §7- Gives a explanation of what the plugin does",
@@ -44,6 +41,8 @@ public class PluginMain extends JavaPlugin implements Listener, CommandExecutor 
 			"Players are considered to be on a whitelist if they have the permission 'whitelist.list.<whitelist name>'",
 			"If a player is on NONE of the active whitelists they will be kicked with the message of that whitelist with the highest priority"
 	};
+	FileConfiguration save;
+	private File saveFile = new File(this.getDataFolder() + "/activelists.yml");
 	private String message_no_permission;
 	private String message_on;
 	private String message_on_list;

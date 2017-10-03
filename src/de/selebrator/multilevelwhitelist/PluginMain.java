@@ -94,7 +94,7 @@ public class PluginMain extends JavaPlugin implements Listener, CommandExecutor 
 		this.save.set("activelists", this.activeWhitelists);
 		try {
 			this.save.save(this.saveFile);
-		} catch (IOException e) {
+		} catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -118,7 +118,7 @@ public class PluginMain extends JavaPlugin implements Listener, CommandExecutor 
 
 				for(String name : this.registeredWhitelists.keySet()) {
 					boolean active = this.activeWhitelists.contains(name);
-					String message = translateNamePlaceholder(active ? this.message_on_list :  this.message_off_list, name);
+					String message = translateNamePlaceholder(active ? this.message_on_list : this.message_off_list, name);
 					sender.sendMessage(message);
 				}
 				return true;
@@ -225,7 +225,7 @@ public class PluginMain extends JavaPlugin implements Listener, CommandExecutor 
 		return this.activeWhitelists.stream()
 				.map(this.registeredWhitelists::get)
 				.reduce((w1, w2) -> (w1.getPriority() > w2.getPriority() ? w1 : w2))
-				.orElse(new Whitelist("null", "null",0, new ArrayList<>()));
+				.orElse(new Whitelist("null", "null", 0, new ArrayList<>()));
 	}
 
 	private void kick(Player player) {
